@@ -109,7 +109,7 @@ mcp-eightsleep/
 │   ├── test_client.py       # login once, renewal after 401, time zone order
 │   ├── test_night.py        # formatting, history, ToolError paths
 │   └── test_server.py       # start without credentials: one hint, still runs
-├── .github/workflows/ci.yml # pytest + pylint on 3.10 and 3.14
+├── .github/workflows/ci.yml # pytest + ruff on 3.10 and 3.14
 ├── .env.template            # copy to .env, fill in the login
 ├── CHANGELOG.md
 ├── LICENSE
@@ -122,7 +122,7 @@ mcp-eightsleep/
 ```bash
 .venv/bin/pip install -e '.[dev]'
 .venv/bin/python -m pytest -q
-.venv/bin/python -m pylint src tests    # lint gate, must stay clean
+.venv/bin/python -m ruff check src tests  # lint gate, must stay clean
 ```
 
 The tests use a fake HTTP layer and a fake client - no account or network needed.
