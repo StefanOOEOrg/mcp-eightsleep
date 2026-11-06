@@ -31,6 +31,11 @@ jobs:
         run: python -m pip install -e '.[dev]'
       - name: Tests
         run: python -m pytest -q
+      - name: Deliberate failing test (temporary, ci-ok proof)
+        run: |
+          echo "def test_deliberate_failure():" > tests/test_deliberate_ci_ok_failure.py
+          echo "    assert False" >> tests/test_deliberate_ci_ok_failure.py
+          python -m pytest -q tests/test_deliberate_ci_ok_failure.py
       - name: Lint
         run: python -m ruff check src tests
 
