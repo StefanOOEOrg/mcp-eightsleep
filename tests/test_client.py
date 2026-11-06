@@ -10,7 +10,7 @@ from mcp_eightsleep import client as client_module
 from mcp_eightsleep.client import Client, EightSleepError
 
 
-class Responses:  # pylint: disable=too-few-public-methods
+class Responses:
     """Fake urlopen: answers by URL, can fail the first trends call with 401."""
 
     def __init__(self, fail_trends_once=False):
@@ -41,7 +41,7 @@ def _login(monkeypatch):
     monkeypatch.delenv("EIGHTSLEEP_TIMEZONE", raising=False)
 
 
-def test_nights_log_in_once_and_sort(monkeypatch, login):  # pylint: disable=unused-argument
+def test_nights_log_in_once_and_sort(monkeypatch, login):
     """One login for two calls; nights oldest first."""
     fake = Responses()
     monkeypatch.setattr(client_module.urllib.request, "urlopen", fake)
@@ -53,7 +53,7 @@ def test_nights_log_in_once_and_sort(monkeypatch, login):  # pylint: disable=unu
     assert f"{client_module.API_URL}/users/u1/trends" in fake.calls
 
 
-def test_expired_token_logs_in_again(monkeypatch, login):  # pylint: disable=unused-argument
+def test_expired_token_logs_in_again(monkeypatch, login):
     """A 401 triggers one fresh login and a retry."""
     fake = Responses(fail_trends_once=True)
     monkeypatch.setattr(client_module.urllib.request, "urlopen", fake)
@@ -68,7 +68,7 @@ def test_missing_login_is_a_clear_error(monkeypatch):
         Client().nights(date(2026, 10, 21), date(2026, 10, 22))
 
 
-class NoZoneResponses(Responses):  # pylint: disable=too-few-public-methods
+class NoZoneResponses(Responses):
     """A profile without a device time zone."""
 
     def __call__(self, request, timeout):
@@ -84,14 +84,14 @@ def test_time_zone_override_wins(monkeypatch):
     assert Client().timezone() == "Asia/Tokyo"
 
 
-def test_time_zone_uses_the_device_zone(monkeypatch, login):  # pylint: disable=unused-argument
+def test_time_zone_uses_the_device_zone(monkeypatch, login):
     """Without an override the device's own zone is used."""
     monkeypatch.setattr(client_module.urllib.request, "urlopen", Responses())
 
     assert Client().timezone() == "Europe/Vienna"
 
 
-def test_time_zone_falls_back_to_utc(monkeypatch, login):  # pylint: disable=unused-argument
+def test_time_zone_falls_back_to_utc(monkeypatch, login):
     """No override and no device zone: UTC, not a hard-coded European zone."""
     monkeypatch.setattr(client_module.urllib.request, "urlopen", NoZoneResponses())
 
